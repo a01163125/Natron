@@ -17,63 +17,58 @@
  * along with Natron.  If not, see <http://www.gnu.org/licenses/gpl-2.0.html>
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef OSGLCONTEXT_X11_H
-#define OSGLCONTEXT_X11_H
-
-// ***** BEGIN PYTHON BLOCK *****
-// from <https://docs.python.org/3/c-api/intro.html#include-files>:
-// "Since Python may define some pre-processor definitions which affect the standard headers on some systems, you must include Python.h before any standard headers are included."
-#include <Python.h>
-// ***** END PYTHON BLOCK *****
+#ifndef OSGLCONTEXT_WAYLAND_H
+#define OSGLCONTEXT_WAYLAND_H
 
 #include "Global/Macros.h"
 
-#include "Global/GLIncludes.h"
 #include "Engine/EngineFwd.h"
 #include "Engine/OSGLContext_xdg.h"
+#include "Global/GLIncludes.h"
 
 #if !defined(Q_MOC_RUN) && !defined(SBK_RUN)
 #include <boost/scoped_ptr.hpp>
 #endif
+
 #ifdef __NATRON_LINUX__
 
 #include "Global/GlobalDefines.h"
 
-
 NATRON_NAMESPACE_ENTER
 
-
-// GLX-specific global data
-struct OSGLContext_glx_dataPrivate;
-class OSGLContext_glx_data
+// EGL-specific global data
+struct OSGLContext_egl_dataPrivate;
+class OSGLContext_egl_data
 {
+
 public:
 
-    boost::scoped_ptr<OSGLContext_glx_dataPrivate> _imp;
+    boost::scoped_ptr<OSGLContext_egl_dataPrivate> _imp;
 
+    GLADloadproc getProcAddress;
 
-    OSGLContext_glx_data();
+    OSGLContext_egl_data();
 
-    ~OSGLContext_glx_data();
+    ~OSGLContext_egl_data();
 };
 
-struct OSGLContext_x11Private;
-class OSGLContext_x11 : public OSGLContext_xdg
+struct OSGLContext_waylandPrivate;
+class OSGLContext_wayland : public OSGLContext_xdg
 {
 public:
 
-    OSGLContext_x11(const FramebufferConfig& pixelFormatAttrs,
-                    int major,
-                    int minor,
-                    bool coreProfile,
-                    const GLRendererID& rendererID,
-                    const OSGLContext_x11* shareContext);
+    OSGLContext_wayland(const FramebufferConfig& pixelFormatAttrs,
+                        int major,
+                        int minor,
+                        bool coreProfile,
+                        const GLRendererID& rendererID,
+                        const OSGLContext_wayland* shareContext);
 
-    ~OSGLContext_x11();
+    ~OSGLContext_wayland();
 
-    static void initGLXData(OSGLContext_glx_data* glxInfo);
-    static void destroyGLXData(OSGLContext_glx_data* glxInfo);
-    static bool makeContextCurrent(const OSGLContext_x11* context);
+    static void initEGLData(OSGLContext_egl_data* eglInfo);
+    static void destroyEGLData(OSGLContext_egl_data* eglInfo);
+    static bool makeContextCurrent(const OSGLContext_wayland* context);
     static void getGPUInfos(std::list<OpenGLRendererInfo>& renderers);
 
     void swapBuffers();
@@ -81,12 +76,13 @@ public:
     void swapInterval(int interval);
 
 private:
-    friend struct OSGLContext_x11Private;
-    boost::scoped_ptr<OSGLContext_x11Private> _imp;
+
+    friend struct OSGLContext_waylandPrivate;
+    boost::scoped_ptr<OSGLContext_waylandPrivate> _imp;
 };
 
 NATRON_NAMESPACE_EXIT
 
 #endif // __NATRON_LINUX__
 
-#endif // OSGLCONTEXT_X11_H
+#endif // OSGLCONTEXT_WAYLAND_H

@@ -15,7 +15,7 @@ Natron and Nuke are very similar. We will focus here on the differences between 
 
 Nodes names
 -----------
-Many nodes have similar names in Natron and Nuke. Here are the the ones thar are different
+Many nodes have similar names in Natron and Nuke. Here are the the ones that are different
 
 
 
